@@ -1,0 +1,2 @@
+{% for choice in poll.choice_set %}{{choice.fullname.strip}}, {% for count in choice.get_counts %}{{count.1}}{% if not forloop.last %},{% endif %}{% endfor %} 
+{% endfor %}

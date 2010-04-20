@@ -1,0 +1,4 @@
+Name:           polls
+Provider:       guardian.co.uk
+Root URI:       http://poll-chart.appspot.com
+Root CMS Path:  /Guardian/polls

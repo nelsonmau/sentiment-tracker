@@ -1,0 +1,93 @@
+<!-- {microapp-javascript:/static/js/2/excanvas.js} -->
+<!-- {microapp-javascript:/static/js/2/jquery.flot.js} -->
+<!-- {microapp-css:/static/css/5/m-poll-chart.css} -->
+<div class="m-poll-chart">
+<!--[if lt IE 8]>
+<style>
+.m-poll-chart .choices { float: left; position: relative; left: 20%; }
+</style>
+<![endif]-->
+
+<div style="padding-top: 5px">
+<a href="http://www.guardian.co.uk/politics/video/2010/apr/15/leaders-debate-manchester" target="_blank" onclick="return popUpNewWindow('http://www.guardian.co.uk/politics/video/2010/apr/15/leaders-debate-manchester');">Click here to watch the highlights of the debate</a>
+</div>
+
+<div class="m-poll-chart-heading">
+    <h3>Reaction tracker<span>Express your response throughout the debate</span></h3>
+    {% if poll.open %}
+        <ul>
+        {% for choice in poll.choice_set %}
+            <li class="party block-{{choice.displayname}}">
+                <a class="poll-link decrease" href="http://poll-chart.appspot.com/poll/{{poll.name}}/{{choice.displayname}}/decr">
+                    <img src="http://static.guim.co.uk/microapps/poll-chart/1/img/{{choice.displayname}}-minus.gif" alt="{{choice.displayname}} thumbs down" />
+                </a>
+                <span class="decrease">0</span>
+                <span class="choices">{{ choice.fullname }}</span>
+                <a class="poll-link increase" href="http://poll-chart.appspot.com/poll/{{poll.name}}/{{choice.displayname}}/incr">
+                    <img src="http://static.guim.co.uk/microapps/poll-chart/1/img/{{choice.displayname}}-plus.gif" alt="{{choice.displayname}} thumbs up" />
+                </a>
+                <span class="increase">0</span>
+            </li>
+        {% endfor %}
+    {% endif %}
+        </ul>
+</div>
+
+<div class="m-poll-chart-container">
+    <div id="chart" style="width: 460px; height: 160px"></div>
+</div>
+
+    <script type="text/javascript">
+    
+    
+    jQuery(function($){
+        $('.poll-link').click(function() {
+            var url = $(this).attr('href');
+            var counter = $(this).next('span');
+            $.ajax({
+                type : "GET",
+                url : url,
+                dataType: 'jsonp',
+                complete: function(xhr, text) {
+                    $(counter).text(1+parseInt($(counter).text()));
+                }
+            });
+            return false;
+        });
+    });
+    function polls_onDataReceived(series) {
+        var options = {
+            xaxis: { mode : "time", color: "#fff" },  yaxis: { },
+            lines: { lineWidth: 1 },
+            shadowSize: 1,
+            legend: { show: false },
+            grid: { backgroundColor: null, color: null, borderColor: null, borderWidth: 0 }
+        };
+
+        jQuery.plot(jQuery("#chart"), series, options);
+     }
+
+    function polls_onError(xhr, text, error) {
+	    console.log("An Error happened: "+text);
+    }
+    
+    function polls_fetchData() {
+        jQuery.ajax({
+            url: '{microapp-href:results/json}',
+            method: 'GET',
+            dataType: 'json',
+            success: polls_onDataReceived,
+            error: polls_onError
+        });
+        setTimeout(polls_fetchData, 15000);
+    }
+	    
+    var data = []
+    jQuery.plot(jQuery("#chart"),
+		[],
+		{}
+    );
+    setTimeout(polls_fetchData, 1);
+    
+    </script> 
+</div> 

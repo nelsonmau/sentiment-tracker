@@ -1,0 +1,15 @@
+application: poll-chart
+version: dev
+runtime: python
+api_version: 1
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: /admin/.*
+  login: required
+  script: admin.py
+
+- url: .*
+  script: main.py

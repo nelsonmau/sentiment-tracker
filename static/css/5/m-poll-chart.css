@@ -1,0 +1,104 @@
+.m-poll-chart
+{
+    float: left;
+    margin-bottom: 20px;
+}
+
+#article-wrapper
+{
+    position: static;
+}
+
+#helper
+{
+    float: left;
+    width: 432px;
+}
+
+.m-poll-chart-heading
+{
+    margin-bottom: 4px;
+}
+.m-poll-chart-heading h3
+{
+    background-color: #ededed;
+    border-top: 1px solid #999 !important;
+    border-bottom: 1px solid #999 !important;
+    margin-bottom: 0 !important;
+    font-family: arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 1px 3px 5px 3px !important;
+}
+
+.m-poll-chart-heading h3 span
+{
+    display: block;
+    font-weight: normal;
+}
+
+.m-poll-chart-container
+{
+    float: left;
+}
+
+.m-poll-chart ul
+{
+    background: #ededed url('http://static.guim.co.uk/microapps/poll-chart/img/arrow.gif') no-repeat bottom left;
+    float: left;
+    padding: 4px 0 18px 7px;
+}
+
+.m-poll-chart .party
+{
+    width: 135px;
+    text-align: center;
+    padding: 0 5px;
+    margin:5px 6px 5px 0 !important;
+    float: left;
+    color: #fff;
+    line-height: 1.8;
+}
+
+.m-poll-chart .party img
+{
+    padding-top: 4px;
+}
+
+.m-poll-chart .party a
+{
+    line-height: 1;
+}
+
+.m-poll-chart .block-lab
+{
+    background-color: #cc0006;
+}
+
+.m-poll-chart .block-con
+{
+    background-color: #0081ba;
+}
+
+.m-poll-chart .block-libdem
+{
+    background-color: #feb415;
+}
+
+.m-poll-chart .increase
+{
+    float: right;
+}
+
+.m-poll-chart .decrease
+{
+    float: left;
+}
+
+.m-poll-chart span.decrease {
+    padding-left: 3px;
+}
+
+.m-poll-chart span.increase {
+    padding-right: 3px
+}

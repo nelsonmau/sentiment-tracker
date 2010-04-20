@@ -1,0 +1,18 @@
+<div class="toolbar">
+        <h2>Current Polls</h2>
+    </div>
+    <ul>
+        {% for poll in polls %}
+            <li class="listitem">
+                <form action="/admin/poll/{{ poll.name }}/delete" method="POST">
+                    <span class="listname"><strong>{{ poll.name }}</strong></span>
+                    <span class="edit"><a href="/admin/poll/{{ poll.name }}/edit">Edit</a></span> |
+                    <span class="component"><a href="/poll/{{ poll.name }}/display">Display Poll</a></span> |
+                    <input type="submit" value="DELETE"/>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <br><br>
+    <div><a href="/admin/poll/create">Create a new poll</a></div>
+

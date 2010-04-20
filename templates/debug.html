@@ -1,0 +1,92 @@
+<html>
+<head>
+    <!--[if IE]><script type="text/javascript" src="http://flot.googlecode.com/svn/trunk/excanvas.js" ></script><![endif]-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" ></script>
+    <script type="text/javascript">
+    jQ = jQuery;
+    </script>
+    <script type="text/javascript" src="/static/js/2/jquery.flot.js" ></script>
+</head>
+<body>
+
+<div class="m-poll-chart">
+    <h3>Live mood <span>Cast your vote</span></h3>
+    <div id="chart" style="width: 460px; height: 300px"></div>
+    <ul>
+	{% for choice in poll.choice_set %}
+	    <li class="party block-{{choice.displayname}}">
+            <a class="poll-link decrease-{{choice.displayname}}" href="{{choice.displayname}}/decr"><img src="http://poll-chart.appspot.com/static/img/{{choice.displayname}}-minus.png" alt="{{choice.displayname}} thumbs up" /></a>
+            <div class="decrease decrease-count-{{choice.displayname}}">0</div>
+            {{ choice.fullname }}
+            <div class="increase increase-count-{{choice.displayname}}">0</div>
+	    <a class="poll-link increase-{{choice.displayname}}" href="{{choice.displayname}}/incr"><img src="http://poll-chart.appspot.com/static/img/{{choice.displayname}}-plus.png" alt="{{choice.displayname}} thumbs up" /></a></li>
+	{% endfor %}
+    </ul>
+
+    <script type="text/javascript">
+
+
+    jQ(function(){
+        jQ('.poll-link').click(function() {
+            var url = jQ(this).attr('href');
+            var prev = jQ(this).prev('.increase')
+            var next =jQ(this).next('.decrease')
+            jQ.ajax({
+                type : "GET",
+                url : url,
+                complete: function(xhr, text) {
+                    jQ(prev).text(1+parseInt(jQ(prev).text()));
+                    jQ(next).text(1+parseInt(jQ(next).text()));
+                }
+            });
+            return false;
+        });
+    });
+    function polls_onDataReceived(series) {
+        /* These are the customisable options, check the API documentation links at the bottom */
+        var options = {
+            xaxis: { mode : "time", color: "#fff" },  yaxis: { },
+            lines: { lineWidth: 2 },
+            shadowSize: 1,
+            legend: { show: false },
+            grid: { backgroundColor: null, color: null, borderColor: null, borderWidth: 0 }
+        };
+
+        jQ.plot(jQ("#chart"), series, options);
+     }
+
+    function polls_onError(xhr, text, error) {
+	    console.log("An Error happened: "+text);
+    }
+
+    function polls_fetchData() {
+        jQ.ajax({
+            url: 'results/json',
+            method: 'GET',
+            dataType: 'json',
+            success: polls_onDataReceived,
+            error: polls_onError
+        });
+        setTimeout(polls_fetchData, 15000);
+    }
+
+    /* Create the chart. API options: http://flot.googlecode.com/svn/trunk/README.txt and http://flot.googlecode.com/svn/trunk/API.txt */
+    var data = []
+    jQ.plot(
+        jQ("#chart"),
+		data,
+		{
+            xaxis: { mode : "time", color: "#fff" },  yaxis: { },
+            lines: { lineWidth: 2 },
+            shadowSize: 1,
+            legend: { show: false },
+            grid: { backgroundColor: null, color: null, borderColor: null, borderWidth: 0 }
+        }
+    );
+    setTimeout(polls_fetchData, 1);
+
+    </script>
+</div>
+
+</body>
+</html>

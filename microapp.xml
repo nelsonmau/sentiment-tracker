@@ -1,0 +1,11 @@
+<microapp interface-version="1" name="polls" provider="Guardian.co.uk" version="1.0">
+    <components>
+        <component-definition display-name="Poll Graph" name="pollgraph" path="/poll/{key:poll_name}/display" widths="460" />
+    </components>
+    <raw-resources>
+        <raw-resource-definition name="poll-raw-data" display-name="Debate Raw Data" cms-path-pattern="/poll/{key:poll_name}" path="/poll/{key:poll_name}" />
+    </raw-resources>
+    <keys>
+        <key-definition display-name="Poll" name="poll_name" />
+    </keys>
+</microapp>

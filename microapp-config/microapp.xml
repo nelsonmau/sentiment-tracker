@@ -1,0 +1,17 @@
+<microapp interface-version="1" name="polls" provider="Guardian.co.uk" version="1.0">
+    <components>
+        <component-definition display-name="Poll Graph" name="pollgraph" path="/poll/{key:poll_name}/display" widths="460" />
+    </components>
+    <raw-resources>
+        <raw-resource-definition name="poll-raw-data" display-name="Debate Raw Data" cms-path-pattern="/poll/{key:poll_name}" path="/poll/{key:poll_name}" />
+        <raw-resource-definition name="lab-minus" display-name="lab-minus" cms-path-pattern="/static/img/lab-minus.png" path="/static/img/lab-minus.png" />
+        <raw-resource-definition name="lab-plus" display-name="lab-plus" cms-path-pattern="/static/img/lab-plus.png" path="/static/img/lab-plus.png" />
+        <raw-resource-definition name="con-minus" display-name="con-minus" cms-path-pattern="/static/img/con-minus.png" path="/static/img/con-minus.png" />
+        <raw-resource-definition name="con-plus" display-name="con-plus" cms-path-pattern="/static/img/con-plus.png" path="/static/img/con-plus.png" />
+        <raw-resource-definition name="libdem-minus" display-name="libdem-minus" cms-path-pattern="/static/img/libdem-minus.png" path="/static/img/libdem-minus.png" />
+        <raw-resource-definition name="libdem-plus" display-name="libdem-plus" cms-path-pattern="/static/img/libdem-plus.png" path="/static/img/libdem-plus.png" />
+    </raw-resources>
+    <keys>
+        <key-definition display-name="Poll" name="poll_name" />
+    </keys>
+</microapp>
