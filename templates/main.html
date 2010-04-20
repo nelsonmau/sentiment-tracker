@@ -76,6 +76,7 @@
             url: '{microapp-href:results/jsonp}',
             method: 'GET',
             dataType: 'jsonp',
+            jsonpCallback: 'onDataFetched',
             success: polls_onDataReceived,
             error: polls_onError
         });

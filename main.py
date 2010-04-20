@@ -82,8 +82,14 @@ class ResultsRequest(webapp.RequestHandler):
             self.response.headers['Cache-Control'] = 'max-age=15'
         else:
             self.response.headers['Cache-Control'] = 'max-age=%d' % (24*HOUR)
-        callback = self.request.get('callback')
-        return template.render(path, {'poll': poll, 'callback': callback})
+        return template.render(path, {'poll': poll})
+
+class ListOpenRequest(webapp.RequestHandler):
+    @helpers.write_response
+    def get(self, *args):
+         open_polls = models.Poll.get_all_open()
+         path = os.path.join(os.path.dirname(__file__), "templates", "list.html")
+         return template.render(path, {'open_polls': open_polls})
 
 def main():
     application = webapp.WSGIApplication([
@@ -94,6 +100,8 @@ def main():
         # Post a value to counter
         ('/poll/([\w-]+)/([\w-]+)/incr', RegisterIncrRequest),
         ('/poll/([\w-]+)/([\w-]+)/decr', RegisterDecrRequest),
+
+        ('/all-open', ListOpenRequest),
         
     ], debug=True)
     run_wsgi_app(application)

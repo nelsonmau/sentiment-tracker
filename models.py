@@ -36,6 +36,10 @@ class Poll(db.Model):
     def get_by_name(cls, name):
         return cls.all().filter('name =',name).get()
 
+    @classmethod
+    def get_all_open(cls):
+        return [poll for poll in cls.all() if poll.open()]
+
     def start_time_as_epoch_secs(self):
         epoch_secs = time.mktime(get_time_as_local(self.start_time).timetuple())
         return epoch_secs
@@ -59,6 +63,9 @@ class Poll(db.Model):
         if self.offset() < self.duration:
             return True
         return False
+
+    def data_path(self):
+        return 'poll/%s/results/jsonp' % self.name
 
         
 class PollForm(djangoforms.ModelForm):
