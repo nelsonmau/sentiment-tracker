@@ -82,7 +82,8 @@ class ResultsRequest(webapp.RequestHandler):
             self.response.headers['Cache-Control'] = 'max-age=15'
         else:
             self.response.headers['Cache-Control'] = 'max-age=%d' % (24*HOUR)
-        return template.render(path, {'poll': poll})
+        callback = self.request.get('callback')
+        return template.render(path, {'poll': poll, 'callback': callback})
 
 def main():
     application = webapp.WSGIApplication([

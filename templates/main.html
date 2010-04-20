@@ -73,9 +73,9 @@
     
     function polls_fetchData() {
         jQuery.ajax({
-            url: '{microapp-href:results/json}',
+            url: '{microapp-href:results/jsonp}',
             method: 'GET',
-            dataType: 'json',
+            dataType: 'jsonp',
             success: polls_onDataReceived,
             error: polls_onError
         });

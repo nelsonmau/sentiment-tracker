@@ -1,0 +1,11 @@
+{{ callback }}([
+    {% for choice in poll.choice_set %}
+        {
+            "label": "{{choice.fullname}}",
+            "color": "rgb({{choice.colour.0}}, {{choice.colour.1}}, {{choice.colour.2}})",
+            "data": {{choice.get_counts}}
+        }
+        {% if not forloop.last %},{%endif%}
+    {% endfor %}
+]);
+
