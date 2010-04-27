@@ -91,6 +91,15 @@ class ListOpenRequest(webapp.RequestHandler):
          path = os.path.join(os.path.dirname(__file__), "templates", "list.html")
          return template.render(path, {'open_polls': open_polls})
 
+class PersistVotesRequest(webapp.RequestHandler):
+    @helpers.write_response
+    def get(self):
+        open_polls = models.Poll.get_all_open()
+        for poll in open_polls:
+            poll.persist_votes()
+        return [poll.name for poll in open_polls]
+
+
 def main():
     application = webapp.WSGIApplication([
         ('/poll/([\w-]+)/display', MainRequest),
@@ -100,6 +109,8 @@ def main():
         # Post a value to counter
         ('/poll/([\w-]+)/([\w-]+)/incr', RegisterIncrRequest),
         ('/poll/([\w-]+)/([\w-]+)/decr', RegisterDecrRequest),
+
+        ('/polls/persist', PersistVotesRequest),
 
         ('/all-open', ListOpenRequest),
         

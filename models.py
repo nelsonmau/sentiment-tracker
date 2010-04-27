@@ -67,6 +67,10 @@ class Poll(db.Model):
     def data_path(self):
         return 'poll/%s/results/jsonp' % self.name
 
+    def persist_votes(self):
+        for choice in self.choice_set:
+            choice.write_counts()
+
         
 class PollForm(djangoforms.ModelForm):
       class Meta:
@@ -93,17 +97,17 @@ class Choice(db.Model):
         return memcache.get_multi(caches)
 
     def write_counts(self):
-        cache_results = self.get_counts_from_memcache()
-        max_time = min(self.poll.duration, (self.calc_offset()))
-        for offset in range(max_time+1):
+       for [actual_time, count] in self.get_counts():
+            offset = int(((actual_time/1000) - self.poll.start_time_as_epoch_secs()) / TIME_SLICE)
             cachename = "counts,%s,%d" % (self.name, offset)
-            actual_time = int(self.poll.start_time_as_epoch_secs()+(offset*TIME_SLICE))*1000
+            logging.info("Creating countersnapshot for %d, value %d" % (self.calc_offset(), count))
             record = self.countsnapshot_set.filter('time_offset =',offset).get()
             if not record:
-                logging.info("Creating countersnapshot for %d" % (self.calc_offset()))
                 record = CountSnapshot(name="%s,%s" % (self.poll.name,self.name), choice=self, time_offset=offset, parent=self)
                 record.put()
-            record.get_or_create_random_sharded_counter().count = int(cache_results[cachename])
+            counter = record.get_or_create_random_sharded_counter()
+            counter.count = count
+            counter.put()
 
     def get_counts(self):
         max_time = min(self.poll.duration, (self.calc_offset()))
@@ -133,13 +137,13 @@ class Choice(db.Model):
         offset = self.calc_offset()
         cachename = "counts,%s,%d" % (self.name, offset)
         val = memcache.incr(cachename, initial_value=1000000)
-        logging.info("Current value = %d" % (val))
+        logging.info("Current value for %s = %d" % (cachename, val))
 
     def decrement(self):    
         offset = self.calc_offset()
         cachename = "counts,%s,%d" % (self.name, offset)
         val = memcache.decr(cachename, initial_value=1000000)
-        logging.info("Current value = %d" % (val))
+        logging.info("Current value for %s = %d" % (cachename, val))
         
 
 class CountSnapshot(db.Model):
