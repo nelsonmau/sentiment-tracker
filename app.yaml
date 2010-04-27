@@ -1,5 +1,5 @@
 application: poll-chart
-version: dev
+version: 89351
 runtime: python
 api_version: 1
 
@@ -10,6 +10,11 @@ handlers:
 - url: /admin/.*
   login: required
   script: admin.py
+
+
+- url: /polls/persist
+  login: admin
+  script: main.py
 
 - url: .*
   script: main.py
