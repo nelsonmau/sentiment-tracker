@@ -48,9 +48,18 @@
                     $(counter).text(1+parseInt($(counter).text()));
                 }
             });
+            hideButtons();
             return false;
         });
     });
+
+    function hideButtons() {
+        jQuery('.poll-link').hide();
+        setTimeout(unHideButtons, 1000);
+    }
+    function unHideButtons() {
+        jQuery('.poll-link').show();
+    }
     function polls_onDataReceived(series) {
         var options = {
             xaxis: { mode : "time", color: "#fff" },  yaxis: { },
@@ -80,7 +89,7 @@
         setTimeout(polls_fetchData, 15000);
     }
 
-	var dataURL = 'http://static.guim.co.uk/interactivedata/15/{{ poll.data_path }}'  
+	var dataURL = 'http://static.guim.co.uk/interactivedata/15/{{ poll.data_path }}'
     var data = []
     jQuery.plot(jQuery("#chart"),
 		[],
