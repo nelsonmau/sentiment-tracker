@@ -1,4 +1,4 @@
 cron:
 - description: persist results in memcached to datastore
   url: /polls/persist
-  schedule: every 1 minutes
+  schedule: every 2 minutes
