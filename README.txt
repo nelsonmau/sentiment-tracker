@@ -17,6 +17,13 @@ Install / Run Locally Instructions
 Download python google-appengine libraries
 dev_appserver.py runserver <directory>
 where <directory> is the directory the code is in (. for current directory)
-hit http://localhost:8000/graph.html for graph
-hit http://localhost:8000/vote/1 to vote for item 1
-hit http://localhost:8000/admin/ to setup the votable items
+
+
+
+Create Poll: 		http://localhost:8080/admin/poll/create
+
+Viewing your poll: 	http://localhost:8080/poll/{poll-name}/debug
+
+The debug allows the app to be executed in a standalone mode outside of r2.
+
+List your polls:	http://localhost:8080/admin/poll/list
