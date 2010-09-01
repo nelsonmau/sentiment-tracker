@@ -9,6 +9,9 @@ import logging
 import os
 
 import models
+import logging
+logging.logMultiprocessing = 0
+
 
 
 try:
@@ -32,6 +35,31 @@ class CreatePoll(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), "admintemplates", "poll_create.html")
         return template.render(path, template_values)
 
+    def party_to_choice_value(self, party_name):
+        party_to_choice = {
+            "Conservative" :"con",
+            "Labour" :"lab",
+            "Lib-Dem" : "libdem"
+        }
+        return party_to_choice[party_name]
+
+    def party_to_choice_name(self, party_name):
+        party_to_choice_name = {
+            "Conservative" :"CON",
+            "Labour" :"LAB",
+            "Lib-Dem" : "LD"
+        }
+        return party_to_choice_name[party_name]
+
+    def party_to_rgb_color(self, party_name):
+        party_to_rgb_color_name = {
+            "Conservative":[4, 133, 190],
+            "Labour": [204, 0, 0],
+            "Lib-Dem":[255, 179, 22]
+        }
+        return party_to_rgb_color_name[party_name]
+
+
     @helpers.write_response        
     def post(self, *args):
         form = models.PollForm(data=self.request.POST)
@@ -40,9 +68,12 @@ class CreatePoll(webapp.RequestHandler):
             logging.info(poll.start_time)
             poll.start_time = poll.start_time.replace(tzinfo=gettz('Europe/London'))
             poll.save()
-            poll.create_choice('lab', 'LAB', [204, 0, 0])
-            poll.create_choice('con', 'CON', [4, 133, 190])
-            poll.create_choice('libdem', 'LD', [255, 179, 22])
+
+            choice_value = self.party_to_choice_value(poll.political_party)
+            choice_name = self.party_to_choice_name(poll.political_party)
+            party_color_as_rgb = self.party_to_rgb_color(poll.political_party)
+
+            poll.create_choice(choice_value, choice_name, party_color_as_rgb)
             logging.info(poll.start_time)
             self.redirect("/admin/poll/list")
         else:

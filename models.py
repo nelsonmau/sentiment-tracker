@@ -31,7 +31,8 @@ class Poll(db.Model):
     name = db.StringProperty(required=True)
     start_time = db.DateTimeProperty(required=True)
     duration = db.IntegerProperty(required=True)
-    
+    political_party = db.StringProperty(required=True, choices=set(["Conservative", "Lib-Dem", "Labour"]), default="Lib-Dem")
+
     @classmethod
     def get_by_name(cls, name):
         return cls.all().filter('name =',name).get()
