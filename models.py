@@ -10,6 +10,7 @@ import logging
 
 from dateutil.tz import *
 import helpers
+import politicalparties
 
 TZ_EUROPE_LONDON = gettz('Europe/London')
 TZ_UTC = gettz('UTC')
@@ -31,7 +32,7 @@ class Poll(db.Model):
     name = db.StringProperty(required=True)
     start_time = db.DateTimeProperty(required=True)
     duration = db.IntegerProperty(required=True)
-    political_party = db.StringProperty(required=True, choices=set(["Conservative", "Lib-Dem", "Labour"]), default="Lib-Dem")
+    political_party = db.StringProperty(required=True, choices=set([politicalparties.CONSERVATIVE, politicalparties.LIBERAL_DEMOCRATS, politicalparties.LABOUR]), default=politicalparties.LIBERAL_DEMOCRATS)
 
     @classmethod
     def get_by_name(cls, name):

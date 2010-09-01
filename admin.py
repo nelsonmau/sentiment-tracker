@@ -9,9 +9,10 @@ import logging
 import os
 
 import models
-import logging
-logging.logMultiprocessing = 0
+#import logging
+#logging.logMultiprocessing = 0
 
+import politicalparties
 
 
 try:
@@ -37,25 +38,25 @@ class CreatePoll(webapp.RequestHandler):
 
     def party_to_choice_value(self, party_name):
         party_to_choice = {
-            "Conservative" :"con",
-            "Labour" :"lab",
-            "Lib-Dem" : "libdem"
+            politicalparties.CONSERVATIVE :"con",
+            politicalparties.LABOUR :"lab",
+            politicalparties.LIBERAL_DEMOCRATS : "libdem"
         }
         return party_to_choice[party_name]
 
     def party_to_choice_name(self, party_name):
         party_to_choice_name = {
-            "Conservative" :"CON",
-            "Labour" :"LAB",
-            "Lib-Dem" : "LD"
+            politicalparties.CONSERVATIVE :"CON",
+            politicalparties.LABOUR :"LAB",
+            politicalparties.LIBERAL_DEMOCRATS : "LD"
         }
         return party_to_choice_name[party_name]
 
     def party_to_rgb_color(self, party_name):
         party_to_rgb_color_name = {
-            "Conservative":[4, 133, 190],
-            "Labour": [204, 0, 0],
-            "Lib-Dem":[255, 179, 22]
+            politicalparties.CONSERVATIVE:[4, 133, 190],
+            politicalparties.LABOUR: [204, 0, 0],
+            politicalparties.LIBERAL_DEMOCRATS:[255, 179, 22]
         }
         return party_to_rgb_color_name[party_name]
 
