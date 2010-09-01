@@ -3,8 +3,30 @@
     </div>
     <form method="POST">
         <div>
-            {{form.as_p}}
-            <p><label for="id_submit">Submit <input id="id_submit" type="submit" name="submit" value="submit" /></label></p>
+            <div class="fieldWrapper">
+                {{form.name.errors}}
+                <label for="id_name">Name:</label>
+                {{form.name}}
+            </div>
+            <div class="fieldWrapper">
+                {{form.start_time.errors}}
+                <label for="id_start_time">Start Time:</label>
+                {{form.start_time}}
+                <span>(e.g 2010-08-27 14:35:00)</span>
+            </div>
+            <div class="fieldWrapper">
+                {{form.duration.errors}}
+                <label for="id_duration">Duration:</label>
+                {{form.duration}}
+                <span>(minutes)</span>
+            </div>
+
+            <div class="fieldWrapper">                 
+                <label for="id_political_party">Political Party:</label>
+                {{form.political_party}}
+            </div>
+
+            <p><label for="id_submit"><input id="id_submit" type="submit" name="create" value="Create" /></label></p>
         </div>
     </form>
 
