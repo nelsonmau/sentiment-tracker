@@ -79,9 +79,9 @@ class ResultsRequest(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), "templates", format+".html")
         poll = models.Poll.get_by_name(pollname)
         if poll and poll.open():
-            self.response.headers['Cache-Control'] = 'max-age=15'
+            self.response.headers['Cache-Control'] = 'public, max-age=15'
         else:
-            self.response.headers['Cache-Control'] = 'max-age=%d' % (24*HOUR)
+            self.response.headers['Cache-Control'] = 'public, max-age=%d' % (24*HOUR)
         return template.render(path, {'poll': poll})
 
 class ListOpenRequest(webapp.RequestHandler):
