@@ -45,9 +45,21 @@
 .m-poll-chart ul
 {
     background: #ededed url('http://static.guim.co.uk/microapps/poll-chart/img/arrow.gif') no-repeat bottom left;
-    float: left;
     padding: 4px 0 18px 7px;
+    width: 155px;
+    margin: 0 auto;
+    zoom: 1;
 }
+
+.m-poll-chart ul:after
+{
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
 
 .m-poll-chart .party
 {
