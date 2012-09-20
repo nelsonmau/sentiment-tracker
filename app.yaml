@@ -1,20 +1,27 @@
-application: poll-chart
-version: 94481
-runtime: python
+application: sentiment-tracker
+version: git-1
+runtime: python27
 api_version: 1
+threadsafe: yes
 
 handlers:
 - url: /static
   static_dir: static
 
 - url: /admin/.*
-  login: required
-  script: admin.py
+  # login: required
+  script: admin.app
 
 
 - url: /polls/persist
   login: admin
-  script: main.py
+  script: main.app
 
 - url: .*
-  script: main.py
+  script: main.app
+
+libraries:
+- name: webapp2
+  version: "2.5.1"
+- name: jinja2
+  version: latest

@@ -100,8 +100,7 @@ class PersistVotesRequest(webapp.RequestHandler):
         return [poll.name for poll in open_polls]
 
 
-def main():
-    application = webapp.WSGIApplication([
+app = webapp.WSGIApplication([
         ('/poll/([\w-]+)/display', MainRequest),
         ('/poll/([\w-]+)/debug', DebugRequest),
         # Results, in a format, like /results/json or /results/jsonp...
@@ -115,9 +114,4 @@ def main():
         ('/all-open', ListOpenRequest),
         
     ], debug=True)
-    run_wsgi_app(application)
-
-if __name__ == '__main__':
-  main()
-
 

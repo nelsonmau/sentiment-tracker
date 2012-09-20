@@ -150,17 +150,10 @@ class WriteCache(webapp.RequestHandler):
             choice.write_counts()
         return "Done"
 
-def main():
-    application = webapp.WSGIApplication([
+app = webapp.WSGIApplication([
     ('/admin/poll/create', CreatePoll),
     ('/admin/poll/list', ListPolls),
     ('/admin/poll/([\w-]+)/edit', EditPoll),
     ('/admin/poll/([\w-]+)/delete', DeletePoll),
     ('/admin/poll/([\w-]+)/write_cache', WriteCache)
     ], debug=True)
-    run_wsgi_app(application)
-
-
-if __name__ == '__main__':
-  main()
-
