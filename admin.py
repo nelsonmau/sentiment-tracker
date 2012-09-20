@@ -31,7 +31,8 @@ class CreatePoll(webapp2.RequestHandler):
         template = jinj.get_template('poll_create.html')
         return template.render({
             'politicalparties': politicalparties.all(),
-            'now': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'start_time': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'edit': False
             })
 
     def party_to_choice_value(self, party_name):
@@ -78,38 +79,33 @@ class CreatePoll(webapp2.RequestHandler):
 
 class EditPoll(webapp2.RequestHandler):
     @helpers.write_response
-    def get(self, *args):
-        logging.info("Getting pollname from %s" % (args))
-        pollname = args[0]
+    def get(self, pollname):
         logging.info("Editing poll: "+pollname)
         poll = Poll.get_by_name(pollname)
         poll.start_time = models.get_time_as_local(poll.start_time)        
-        logging.info("Got poll from datastore: "+str(poll))
-        template_values = {
-            "form": models.PollForm(instance=poll)
-        }
+        logging.info("Got poll from datastore: %s " % (poll))
         template = jinj.get_template('poll_create.html')
 
-        return template.render(template_values)
+        return template.render({
+            'politicalparties': politicalparties.all(),
+            'start_time': poll.start_time,
+            'name': poll.name,
+            'duration': poll.duration,
+            'edit': True
+            })
 
     @helpers.write_response
-    def post(self, *args):
-        pollname = args[0]
+    def post(self, pollname):
         logging.info("Editing poll: "+pollname)
         poll = models.Poll.get_by_name(pollname)
-        logging.info("Got poll from datastore: "+str(poll))
-        form = models.PollForm(data=self.request.POST, instance=poll)
-        if form.is_valid():
-            lst = form.save()
-            lst.start_time = lst.start_time.replace(tzinfo=gettz('Europe/London'))
-            lst.save()
-            self.redirect("/admin/poll/list")
-        else:
-            template_values = {
-                "form": form,
-            }
-            template = jinj.get_template('poll_create.html')
-            return template.render(template_values)
+        name = self.request.get('name')
+        start_time = parse(self.request.get('start_time')).replace(tzinfo=gettz('Europe/London'))
+        duration = int(self.request.get('duration'))
+        poll.name = name
+        poll.start_time = start_time
+        poll.duration = duration
+        poll.save()
+        self.redirect("/admin/poll/list")
 
 
 class DeletePoll(webapp2.RequestHandler):
@@ -146,9 +142,9 @@ class WriteCache(webapp2.RequestHandler):
         return "Done"
 
 app = webapp2.WSGIApplication([
-    ('/admin/poll/create', CreatePoll),
-    ('/admin/poll/list', ListPolls),
-    ('/admin/poll/([\w-]+)/edit', EditPoll),
-    ('/admin/poll/([\w-]+)/delete', DeletePoll),
-    ('/admin/poll/([\w-]+)/write_cache', WriteCache)
+    ('/admin/create', CreatePoll),
+    ('/admin/([\w-]+)', EditPoll),
+    ('/admin/([\w-]+)/delete', DeletePoll),
+    ('/admin/([\w-]+)/write_cache', WriteCache),
+    ('/admin/.*', ListPolls)
     ], debug=True)

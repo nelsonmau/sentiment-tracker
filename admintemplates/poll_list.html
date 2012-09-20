@@ -6,9 +6,10 @@
             <li class="listitem">
                 <form action="/admin/poll/{{ poll.name }}/delete" method="POST">
                     <span class="listname"><strong>{{ poll.name }}</strong></span>
-                    <span class="edit"><a href="/admin/poll/{{ poll.name }}/edit">Edit</a></span> |
+                    <span class="edit"><a href="/admin/{{ poll.name }}">Edit</a></span> |
                     <span class="component"><a href="/poll/{{ poll.name }}/display">Display Poll</a></span> |
                     <span class="component-debug"><a href="/poll/{{ poll.name }}/debug">Display Poll (Debug Mode)</a></span> |
+                    <span class="component-debug"><a href="/poll/{{ poll.name }}/doembed">Embed Poll</a></span> |
                     <input type="submit" value="DELETE"/>
                 </form>
             </li>
