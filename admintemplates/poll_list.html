@@ -9,9 +9,12 @@
                     <span class="edit"><a href="/admin/{{ poll.name }}">Edit</a></span> |
                     <span class="component"><a href="/poll/{{ poll.name }}/display">Display Poll</a></span> |
                     <span class="component-debug"><a href="/poll/{{ poll.name }}/debug">Display Poll (Debug Mode)</a></span> |
-                    <span class="component-debug"><a href="/poll/{{ poll.name }}/doembed">Embed Poll</a></span> |
                     <input type="submit" value="DELETE"/>
                 </form>
+                <div>
+                    <span>Embed Code</span>
+                    <pre>&lt;iframe src="http://sentiment-tracker.appspot.com/poll/{{poll.name}}/embed" width="640" border="0">&lt;/iframe></pre>
+                </div>
             </li>
         {% endfor %}
     </ul>
