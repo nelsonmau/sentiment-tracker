@@ -1,6 +1,4 @@
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
+import webapp2
 
 import helpers
 import urllib2
@@ -8,6 +6,7 @@ import urllib
 import logging
 import os
 
+from models import Poll
 import models
 #import logging
 #logging.logMultiprocessing = 0
@@ -15,26 +14,25 @@ import models
 import politicalparties
 
 
-try:
-    from django.utils import simplejson
-except ImportError:
-    try:
-        from django.utils import simplejson
-    except ImportError:
-        import json as simplejson
-        
+import json        
 import datetime
 from dateutil.tz import *
 from dateutil.parser import *
+import jinja2
 
-class CreatePoll(webapp.RequestHandler):
+
+jinj = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'admintemplates')))
+
+
+class CreatePoll(webapp2.RequestHandler):
     @helpers.write_response
     def get(self, *args):
-        template_values = {
-            "form": models.PollForm()
-        }
-        path = os.path.join(os.path.dirname(__file__), "admintemplates", "poll_create.html")
-        return template.render(path, template_values)
+        template = jinj.get_template('poll_create.html')
+        return template.render({
+            'politicalparties': politicalparties.all(),
+            'now': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
 
     def party_to_choice_value(self, party_name):
         party_to_choice = {
@@ -60,44 +58,39 @@ class CreatePoll(webapp.RequestHandler):
         }
         return party_to_rgb_color_name[party_name]
 
-
-    @helpers.write_response        
+    @helpers.write_response
     def post(self, *args):
-        form = models.PollForm(data=self.request.POST)
-        if form.is_valid():
-            poll = form.save(commit=False)
-            logging.info(poll.start_time)
-            poll.start_time = poll.start_time.replace(tzinfo=gettz('Europe/London'))
-            poll.save()
+        logging.info(self.request.arguments())
+        name = self.request.get('name')
+        start_time = parse(self.request.get('start_time'))
+        duration = int(self.request.get('duration'))
+        logging.info(name)
+        party = politicalparties.all_parties[self.request.get('political_party')]
 
-            choice_value = self.party_to_choice_value(poll.political_party)
-            choice_name = self.party_to_choice_name(poll.political_party)
-            party_color_as_rgb = self.party_to_rgb_color(poll.political_party)
+        poll = Poll(name=name, start_time=start_time, duration=duration)
+        logging.info(poll.start_time)
+        poll.start_time = poll.start_time.replace(tzinfo=gettz('Europe/London'))
+        poll.save()
 
-            poll.create_choice(choice_value, choice_name, party_color_as_rgb)
-            logging.info(poll.start_time)
-            self.redirect("/admin/poll/list")
-        else:
-            template_values = {
-                "form": form,
-            }
-            path = os.path.join(os.path.dirname(__file__), "admintemplates", "poll_create.html")
-            return template.render(path, template_values)
+        poll.create_choice(party['id'], party['short_name'], party['colour'])
+        self.redirect("/admin/poll/list")
 
-class EditPoll(webapp.RequestHandler):
+
+class EditPoll(webapp2.RequestHandler):
     @helpers.write_response
     def get(self, *args):
         logging.info("Getting pollname from %s" % (args))
         pollname = args[0]
         logging.info("Editing poll: "+pollname)
-        poll = models.Poll.get_by_name(pollname)
+        poll = Poll.get_by_name(pollname)
         poll.start_time = models.get_time_as_local(poll.start_time)        
         logging.info("Got poll from datastore: "+str(poll))
         template_values = {
             "form": models.PollForm(instance=poll)
         }
-        path = os.path.join(os.path.dirname(__file__), "admintemplates", "poll_create.html")
-        return template.render(path, template_values)
+        template = jinj.get_template('poll_create.html')
+
+        return template.render(template_values)
 
     @helpers.write_response
     def post(self, *args):
@@ -115,11 +108,11 @@ class EditPoll(webapp.RequestHandler):
             template_values = {
                 "form": form,
             }
-            path = os.path.join(os.path.dirname(__file__), "admintemplates", "poll_create.html")
-            return template.render(path, template_values)
+            template = jinj.get_template('poll_create.html')
+            return template.render(template_values)
 
-class DeletePoll(webapp.RequestHandler):
 
+class DeletePoll(webapp2.RequestHandler):
     @helpers.write_response
     def post(self, *args):
         pollname = args[0]
@@ -133,16 +126,18 @@ class DeletePoll(webapp.RequestHandler):
         poll.delete()
         self.redirect("/admin/poll/list")
 
-class ListPolls(webapp.RequestHandler):
+
+class ListPolls(webapp2.RequestHandler):
     @helpers.write_response
     def get(self, *args):
         template_values = {
             "polls": models.Poll.all().fetch(50)
         }
-        path = os.path.join(os.path.dirname(__file__), "admintemplates", "poll_list.html")
-        return template.render(path, template_values)
+        template = jinj.get_template('poll_list.html')
+        return template.render(template_values)
 
-class WriteCache(webapp.RequestHandler):
+
+class WriteCache(webapp2.RequestHandler):
     @helpers.write_response
     def get(self, *args):
         poll = models.Poll.get_by_name((args[0]))
@@ -150,7 +145,7 @@ class WriteCache(webapp.RequestHandler):
             choice.write_counts()
         return "Done"
 
-app = webapp.WSGIApplication([
+app = webapp2.WSGIApplication([
     ('/admin/poll/create', CreatePoll),
     ('/admin/poll/list', ListPolls),
     ('/admin/poll/([\w-]+)/edit', EditPoll),

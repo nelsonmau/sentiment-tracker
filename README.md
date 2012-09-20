@@ -8,6 +8,9 @@ Michael Brunton-Spall
 Philip Wills
 Grant Klopper
 
+## License
+
+Apache Software Foundations 2.0 License
 
 ## Get it running
 

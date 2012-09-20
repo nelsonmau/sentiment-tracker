@@ -4,34 +4,29 @@
 <form method="POST">
     <div>
         <div class="fieldWrapper">
-            {{form.name.errors}}
             <label for="id_name">Name:</label>
-            {{form.name}}
+            <input type="text" name="name" id="id_name" placeholder="the-poll-name">
         </div>
         <div class="fieldWrapper">
-            {{form.start_time.errors}}
             <label for="id_start_time">Start Time:</label>
-            {{form.start_time}}
+            <input type="datetime" name="start_time" id="id_start_time" placeholder="{{now}}" value="{{now}}">
             <span>(e.g 2010-08-27 14:35:00)</span>
         </div>
         <div class="fieldWrapper">
-            {{form.duration.errors}}
             <label for="id_duration">Duration:</label>
-            {{form.duration}}
+            <input type="number" min=0 max=1440 name="duration" id="id_duration" placeholder="(minutes)">
             <span>(minutes)</span>
         </div>
 
         <div class="fieldWrapper">
             <label for="id_political_party">Political Party:</label>
-            {{form.political_party}}
+            <select id="id_political_party" name="political_party">
+                {% for item in politicalparties %}
+                <option value="{{item.id}}">{{item.name}}</option>
+                {% endfor %}
+            </select>
         </div>
 
         <p><label for="id_submit"><input id="id_submit" type="submit" name="create" value="Create" /></label></p>
     </div>
 </form>
-
-<script type="text/javascript">
-    //gee thanks old version of Django on appengine
-    var startTimeField = document.getElementById("id_start_time");
-    startTimeField.value = startTimeField.value.substring(0, startTimeField.value.indexOf("+"));
-</script>

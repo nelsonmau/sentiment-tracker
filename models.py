@@ -1,7 +1,5 @@
 from google.appengine.api import memcache
 from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-from google.appengine.ext.db import djangoforms
 
 import random
 import datetime
@@ -73,10 +71,6 @@ class Poll(db.Model):
         for choice in self.choice_set:
             choice.write_counts()
 
-        
-class PollForm(djangoforms.ModelForm):
-      class Meta:
-        model = Poll
     
 class Choice(db.Model):
     poll = db.ReferenceProperty(Poll, required=True)

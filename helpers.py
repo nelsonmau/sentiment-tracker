@@ -8,6 +8,7 @@ from google.appengine.api import users
 import logging
 import functools
 
+
 def cached(name, timeout=60):
     def wrapper(method):
         @functools.wraps(method)
